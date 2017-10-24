@@ -1,0 +1,10 @@
+h1 {
+	margin: auto;
+	text-align: center;
+}
+
+/* ID selctions */
+
+#search-hashtag {
+	width: 90%;
+}
