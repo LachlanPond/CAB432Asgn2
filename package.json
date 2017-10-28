@@ -1,0 +1,25 @@
+{
+  "name": "cab432asgn2",
+  "version": "1.0.0",
+  "description": "Repo for the second assignment of CAB432",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.16.2",
+    "twitter": "^1.7.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lemonz1805/CAB432Asgn2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lemonz1805/CAB432Asgn2/issues"
+  },
+  "homepage": "https://github.com/Lemonz1805/CAB432Asgn2#readme"
+}

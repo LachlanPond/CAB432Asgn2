@@ -1,30 +1,77 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <title>Hello, world!</title>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="stylesheet.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-  </head>
+<html>
   <body>
-    <h1>Twitter Hashtag Tracker</h1>
-    <div class="container"><p>Enter the Hastags you wish to keep track of below with a space inbetween (e.g. #fashion #picoftheday #halloween)</p></div>
-    <div class="container">
-      <div class="form-inline">
-        <input type="text" class="form-control" value="Search..." id="search-hashtag">
-        <button type="submit" class="btn btn-primary">Search</button>
-      </div>
-    </div>
+    <form id ="message-entry" method="post" action="javascript:sendFormContent()">
+      <h1>Twitter Sentimental Analysis</h1>
+      <h4>Please enter key words to search including hashtags seperated by a comma</h4>
+      <input type="Text" name="text" value="" id="text">
+      <input type="submit" id="submit" value="Go">
+    </form>
+  <h2>Results</h2>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-    <script src="webpagejs.js"></script>
+  <div id ="divert">
+  <table id="messages" >
+      <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  </table>
+  </div>
+
+  <h2>Additional (Debugging purposes)</h2>
+
+  <a href="/viewmessages">
+    <input type="button" value="All searches made by user">
+  </a>
+  <br><br>
+  <a href="/messages">
+    <input type="button" value="Click to view JSON of all searches">
+  </a>
+  <br><br>
+  <a href="/tweets">
+    <input type="button" value="Click to view JSON of Twitter results">
+  </a>
+
   </body>
+
+
+  <script>
+
+    onload = function conversation() {
+        $.get('/tweets', function (data) {
+        readMsg(data);
+      });
+    }
+
+     // setTimeout(function(){
+       // if (entered != old) { 
+  //        window.location.reload(1);
+          //old = entered;
+      //  }
+   //   }, 5000);
+
+    function sendFormContent() {
+      var form = $('#message-entry');
+      var query = form.serialize();
+
+      $.post('/messages', query, function (data) {
+        readMsg(data);
+      });
+
+      $.post('/tweets', query, function (data) {
+        readMsg(data);
+      });
+
+      entered = data;
+      
+    }
+
+    function readMsg(data) {
+      for (var i = 0; i < data.length; i++) {
+        var msg = data[i];
+        var output = '<h3>'+msg.name+' (@'+msg.username+')</h3>';
+        output += '<p>'+msg.tweet+'</p>'; 
+        output += '<p><i>'+msg.time+'></i></p>';  
+        $("#messages").prepend(output); 
+      }
+    }
+
+  </script>
+      
 </html>
