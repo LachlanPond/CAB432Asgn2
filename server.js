@@ -15,6 +15,7 @@ var conversation = [];
 var results = [];
 var searched = ' ';
 var allTweets = '';
+var allTweetsArray = [];
 
 // Set up our Twitter client ID
 var client = new Twitter({ 
@@ -86,6 +87,11 @@ app.post('/tweets', function(appReq, appRes) {
 		//throw error;
 	});
 
+});
+
+app.get('/alltweets', function(appReq, appRes) {
+	allTweetsArray = allTweets.split(',');
+	appRes.json(allTweetsArray);
 });
 
 app.get('/tweets', function(appReq, appRes) {

@@ -29,7 +29,9 @@
   </a>
 
   </body>
-
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="d3visuals.js"></script>
+  <script src="textManipulation.js"></script>
 
   <script>
 
@@ -41,6 +43,11 @@
 
       $.get('/messages', function (data) {
         document.getElementById("text").value = data[0].text;
+      });
+
+      $.get('/alltweets', function (data) {
+        var alltweets = countArrayElements(data);
+        drawBarGraph(alltweets[1], alltweets[0]);
       });
 
     };
