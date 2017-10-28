@@ -3,6 +3,8 @@ var app = express();
 var path = require('path');
 var Twitter = require('twitter'); 
 var bodyParser = require('body-parser');
+var natural = require('natural');
+var tokenizer = new natural.WordTokenizer();
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static('.'))
 
@@ -55,9 +57,13 @@ app.post('/messages', function(appReq, appRes) {
 
 app.post('/tweets', function(appReq, appRes) {
 
-	var stream = client.stream('statuses/filter', {track: searched});
+	var stream = client.stream('statuses/filter', {
+		track: searched,
+		language: 'en'
+	});
 
 	stream.on('data', function(event) {
+		
 		var message = { 
 			name: event.user.name,
 			username: event.user.screen_name,
@@ -66,13 +72,18 @@ app.post('/tweets', function(appReq, appRes) {
 		}
 
 		results.push(message);
-		var splitStr = (event.user.description).split(" "); // Split by a space
+		results.sort(function(a, b) { 
+			return a.name < b.name;
+		});
+		var desc = event.user.description;
+		var splitStr = tokenizer.tokenize(desc); // Split by a space
 		allTweets += splitStr + ","; // Add to list of tweet words
+
 
 	});
 
 	stream.on('error', function(error) {
-		throw error;
+		//throw error;
 	});
 
 });
