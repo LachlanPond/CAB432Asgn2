@@ -3,7 +3,7 @@
     <form id ="message-entry" method="post" action="javascript:sendFormContent()">
       <h1>Twitter Sentimental Analysis</h1>
       <h4>Please enter key words to search including hashtags seperated by a comma</h4>
-      <input type="Text" name="text" value="" id="text">
+      <input type="Text" name="text" id="text">
       <input type="submit" id="submit" value="Go">
     </form>
   <h2>Results</h2>
@@ -20,8 +20,8 @@
     <input type="button" value="All searches made by user">
   </a>
   <br><br>
-  <a href="/messages">
-    <input type="button" value="Click to view JSON of all searches">
+  <a href="/statisics">
+    <input type="button" value="Click to view search statistics">
   </a>
   <br><br>
   <a href="/tweets">
@@ -33,18 +33,22 @@
 
   <script>
 
+    // Onload of screen display data
     onload = function conversation() {
         $.get('/tweets', function (data) {
         readMsg(data);
       });
-    }
 
-     // setTimeout(function(){
-       // if (entered != old) { 
-  //        window.location.reload(1);
-          //old = entered;
-      //  }
-   //   }, 5000);
+      $.get('/messages', function (data) {
+        document.getElementById("text").value = data[0].text;
+      });
+
+    };
+
+    // Refresh screen after 6 seconds; 
+    setTimeout(function(){
+      window.location.reload(1);
+    }, 6000);
 
     function sendFormContent() {
       var form = $('#message-entry');
@@ -57,13 +61,11 @@
       $.post('/tweets', query, function (data) {
         readMsg(data);
       });
-
-      entered = data;
       
     }
 
     function readMsg(data) {
-      for (var i = 0; i < data.length; i++) {
+      for (var i = 0; i < 15; i++) {
         var msg = data[i];
         var output = '<h3>'+msg.name+' (@'+msg.username+')</h3>';
         output += '<p>'+msg.tweet+'</p>'; 

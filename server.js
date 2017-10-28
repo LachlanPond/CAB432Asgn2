@@ -12,7 +12,9 @@ const port = 3000;
 var conversation = [];
 var results = [];
 var searched = ' ';
+var allTweets = '';
 
+// Set up our Twitter client ID
 var client = new Twitter({ 
 	consumer_key: 'arqa9nkL9XPIgHfnPGGc1qan6',
 	consumer_secret: '57KUJIkZgdEUakKpLTQ7iLkHXXCef144IHZ4h0yVCcRpKMBs9R',
@@ -20,18 +22,22 @@ var client = new Twitter({
 	access_token_secret: '0NRjoZBaNahTqGZsKrVNjFw41JJLneromZBn5LoqSNmTw'
 });
 
+// Index page
 app.get('/', function (appReq, appRes) {
 	appRes.sendFile(path.join(__dirname + '/index.html'));
 });
 
+// JSON page where our search is held
 app.get('/messages', function(appReq, appRes) {
 	appRes.json(conversation);
 });
 
+// User frendly GUI displaying JSON results of querired searches
 app.get('/viewmessages', function(appReq, appRes) {
 	appRes.sendFile(path.join(__dirname + '/messages.html'));
 });
 
+// Post the querired search 
 app.post('/messages', function(appReq, appRes) {
 
 	var message = {
@@ -47,50 +53,44 @@ app.post('/messages', function(appReq, appRes) {
 	
 });
 
-
 app.post('/tweets', function(appReq, appRes) {
 
-	results = [];
-	sentHeaders = []; 
+	var stream = client.stream('statuses/filter', {track: searched});
 
-	client.get('search/tweets', {
-		q: searched,
-		result_type: 'recent',
-		lang: 'eng',
-		count: 20
-		},
-		
-		function(error, tweets, response) {
-
-		if(!error) {
-		
-		var i = 0; 
-
-		while (i < tweets.statuses.length) { 
-
-			var message = { 
-				name: tweets.statuses[i].user.name,
-				username: tweets.statuses[i].user.screen_name,
-				tweet: tweets.statuses[i].user.description,
-				time: tweets.statuses[i].user.created_at
-			}
-			i++; 
-			
-			sentHeaders.push(message);
+	stream.on('data', function(event) {
+		var message = { 
+			name: event.user.name,
+			username: event.user.screen_name,
+			time: event.user.created_at,
+			tweet: event.user.description
 		}
 
-		results.push(sentHeaders);
-		appRes.json(sentHeaders); 
-	
-		}
-	
+		results.push(message);
+		var splitStr = (event.user.description).split(" "); // Split by a space
+		allTweets += splitStr + ","; // Add to list of tweet words
+
 	});
-		
+
+	stream.on('error', function(error) {
+		throw error;
+	});
+
 });
 
 app.get('/tweets', function(appReq, appRes) {
 	appRes.json(results);
 });
+
+
+app.get('/statisics', function(appReq, appRes) {
+	appRes.write("<h1>Most queried search</h1>"); 
+
+	// Write code to determine most frequent from allSeacrhed
+
+
+	appRes.end();
+});
+
 
 
 // Set listening prot
