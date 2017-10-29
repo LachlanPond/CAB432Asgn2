@@ -19,49 +19,31 @@
     
     <article id="mainArticle"> 
 
-    <form id ="message-entry" method="post" action="javascript:sendFormContent()">
-      <h1>by Luke Pritchard & Lachlan Pond</h1>
-      <h4>Please enter key words to search including hashtags seperated by a comma</h4>
-      <input type="Text" name="text" id="text"><br><br>
-      <input type="submit" id="submit" value="Go">
-    </form>
-  <h2>Results</h2>
 
-  <table id="messages">
-      <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-  </table>
+    <h2>Positive Negative count</h2>
 
+    <table id="messages">
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    </table>
+  
 
       </article>
   </body>
 
-  <script src="http://d3js.org/d3.v3.min.js"></script>
-  <script src="d3visuals.js"></script>
-  <script src="textManipulation.js"></script>
 
   <script>
 
     // Onload of screen display data
     onload = function conversation() {
-        $.get('/tweets', function (data) {
+      $.get('/allTweets', function (data) {
         readMsg(data);
       });
-
-      $.get('/messages', function (data) {
-        document.getElementById("text").value = data[0].text;
-      });
-
-      $.get('/alltweets', function (data) {
-        var alltweets = countArrayElements(data);
-        drawBarGraph(alltweets[1], alltweets[0]);
-      });
-
     };
 
     // Refresh screen after 6 seconds; 
-    setTimeout(function(){
-      window.location.reload(1);
-    }, 6000);
+  //  setTimeout(function(){
+    //  window.location.reload(1);
+    //}, 6000);
 
     //Send form
     function sendFormContent() {
@@ -89,5 +71,5 @@
     }
 
   </script>
-      
+
 </html>

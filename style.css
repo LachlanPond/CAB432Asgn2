@@ -173,8 +173,8 @@ header, footer, article, nav, div {
   }
 
 #pageHeader h1 { 
-  text-align: auto;
-  float: auto; 
+  text-align: left;
+  float: left; 
   font-size: 50px;
   padding-left: 50px;
   font-family: "Times New Roman", Times, serif;

@@ -8,6 +8,7 @@ var nounInflector = new natural.NounInflector();
 var tokenizer = new natural.WordTokenizer();
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static('.'))
+var sentiment = require('sentiment'); 
 
 const hostname = '127.0.0.1';
 const port = 3000;
@@ -17,6 +18,12 @@ var results = [];
 var searched = ' ';
 var allTweets = '';
 var allTweetsArray = [];
+
+// Post Neg related
+var posCount = 0; 
+var negCount = 0;
+var mutualCount = 0;  
+var totalAmount = 0;
 
 // Set up our Twitter client ID
 var client = new Twitter({ 
@@ -79,6 +86,17 @@ app.post('/tweets', function(appReq, appRes) {
 		});
 
 		var desc = event.user.description;
+
+		// Pos Neg count
+		if(sentiment(desc).score > 0) { 
+			posCount++; 
+		} else if (sentiment(desc).score == 0) {
+			mutualCount++;
+		} else {  
+			negCount++; 
+		}
+		totalAmount++;
+
 		var splitStr = tokenizer.tokenize(desc); // Split by a space'
 		var newStr = []; 
 
@@ -97,8 +115,6 @@ app.post('/tweets', function(appReq, appRes) {
 
 		allTweets += newStr + ","; // Add to list of tweet words
 
-		console.log(newStr);
-
 	});
 
 	stream.on('error', function(error) {
@@ -107,12 +123,8 @@ app.post('/tweets', function(appReq, appRes) {
 
 });
 
-app.get('/twitterRes', function(appReq, appRes) {
-	appRes.json(allTweets);
-});
 
 app.get('/alltweets', function(appReq, appRes) {
-	allTweetsArray = allTweets.split(',');
 	appRes.json(allTweetsArray);
 });
 
@@ -121,15 +133,17 @@ app.get('/tweets', function(appReq, appRes) {
 });
 
 
-app.get('/statisics', function(appReq, appRes) {
-	appRes.write("<h1>Most queried search</h1>"); 
-
-	// Write code to determine most frequent from allSeacrhed
-
-
-	appRes.end();
+app.get('/statistics', function(appReq, appRes) {
+	appRes.sendFile(path.join(__dirname + '/analystics.html'));
 });
 
+app.get('/posNeg', function(appReq, appRes) {
+	appRes.sendFile(path.join(__dirname + '/posNeg.html'));
+	console.log("Positive: " + posCount);
+	console.log("Negative: " + negCount); 
+	console.log("Mutal: " + mutualCount); 
+	console.log("Total: " + totalAmount);
+});
 
 
 // Set listening prot
