@@ -4,6 +4,7 @@ var path = require('path');
 var Twitter = require('twitter'); 
 var bodyParser = require('body-parser');
 var natural = require('natural');
+var nounInflector = new natural.NounInflector();
 var tokenizer = new natural.WordTokenizer();
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static('.'))
@@ -82,14 +83,15 @@ app.post('/tweets', function(appReq, appRes) {
 		var newStr = []; 
 
 		var i = 0; 
+		// Cycle through list
 		while (i < splitStr.length) { 
+			// Make sure not a number
 			if(isNaN(parseFloat(splitStr[i])) && !isFinite(splitStr[i])) { 
+				// Make sure not single or no charecter
 				if(splitStr[i].length > 1) { 
-
-					newStr.push(splitStr[i].toLowerCase());
+					newStr.push(nounInflector.singularize(splitStr[i].toLowerCase()));
 				}
-			}
-			
+			}		
 			i++; 
 		}
 
