@@ -4,6 +4,8 @@ var path = require('path');
 var Twitter = require('twitter'); 
 var bodyParser = require('body-parser');
 var natural = require('natural');
+var tsv = require('tsv');
+var fs = require('fs');
 var nounInflector = new natural.NounInflector();
 var tokenizer = new natural.WordTokenizer();
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -125,6 +127,22 @@ app.post('/tweets', function(appReq, appRes) {
 
 
 app.get('/alltweets', function(appReq, appRes) {
+	allTweetsArray = allTweets.split(',');
+	var tsvData = countArrayElements(allTweetsArray);
+	var dataArray = tsvData[1].sort(function(a, b){ return b-a });
+	var wordArray = refSort(tsvData[0], tsvData[1]);
+	wordArray = wordArray[0];
+	wordArray.length = 30;
+	dataArray.length = 30;
+	var dataWordJson = convertTwoArraysToJson(wordArray, dataArray);
+	tsvString = tsv.stringify(dataWordJson);
+
+	fs.writeFile("data.tsv", tsvString, function(err) {
+		if(err) {
+			return console.log(err);
+		}
+		console.log("The file was saved!");
+	});
 	appRes.json(allTweetsArray);
 });
 
@@ -150,3 +168,58 @@ app.get('/posNeg', function(appReq, appRes) {
 app.listen(port, function () {
     console.log(`Express app listening at http://${hostname}:${port}/`);
 });
+
+function countArrayElements(array) {
+	var a = []; b = []; prev = null;
+	var arr = array;
+	arr.sort();
+	for (var i = 0; i < arr.length; i++) {
+		if (arr[i] !== prev) {
+			a.push(arr[i]);
+			b.push(1);
+		}
+		else {
+			b[b.length-1]++;
+		}
+		prev = arr[i];
+	}
+	return [a,b];
+}
+
+function convertTwoArraysToJson(a, b) {
+	var obj = [];
+	var inner = {};
+	for (var i = 0; i < a.length; i++) {
+		inner = {
+			"word": a[i],
+			"count": b[i]
+		};
+		obj.push(inner);
+	}
+	return obj; 
+}
+
+function refSort(target, ref) {
+	// Create array of indices
+	var zipped = [];
+
+	for (var i = 0; i < ref.length; i++) {
+		var zip = {
+			"word": target[i],
+			"count": ref[i]
+		};
+		zipped.push(zip);
+	}
+
+	zipped.sort(function(a,b) {
+		return parseFloat(b.count) - parseFloat(a.count);
+	});
+
+	var a = []; b = [];
+	for (var i = 0; i < zipped.length; i++) {
+		a.push(zipped[i].word);
+		b.push(zipped[i].count);
+	}
+
+	return [a,b];
+}
