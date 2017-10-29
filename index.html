@@ -1,20 +1,34 @@
 <html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <title>Twitter Analysis</title>
+  </head>
   <body>
+
+    <header id="pageHeader">
+      <h1 id="mainLogo">Twitter Sentimental Analysis</h1>
+    </header>
+
+    <nav id="mainNav">
+      
+    </nav>
+    <div id="siteAds"></div>
+    
+    <article id="mainArticle"> 
+
     <form id ="message-entry" method="post" action="javascript:sendFormContent()">
-      <h1>Twitter Sentimental Analysis</h1>
+      <h1>by Luke Pritchard & Lachlan Pond</h1>
       <h4>Please enter key words to search including hashtags seperated by a comma</h4>
-      <input type="Text" name="text" id="text">
+      <input type="Text" name="text" id="text"><br><br>
       <input type="submit" id="submit" value="Go">
     </form>
   <h2>Results</h2>
 
-  <div id ="divert">
-  <table id="messages" >
+  <table id="messages">
       <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   </table>
-  </div>
 
-  <h2>Additional (Debugging purposes)</h2>
+  <h1>Additional (Debugging purposes)</h1>
 
   <a href="/viewmessages">
     <input type="button" value="All searches made by user">
@@ -27,8 +41,13 @@
   <a href="/tweets">
     <input type="button" value="Click to view JSON of Twitter results">
   </a>
-
+  <br><br>
+  <a href="/twitterRes">
+    <input type="button" value="Click to view all Twitter comments list">
+  </a>
+      </article>
   </body>
+
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script src="d3visuals.js"></script>
   <script src="textManipulation.js"></script>
@@ -57,6 +76,7 @@
       window.location.reload(1);
     }, 6000);
 
+    //Send form
     function sendFormContent() {
       var form = $('#message-entry');
       var query = form.serialize();

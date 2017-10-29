@@ -27,7 +27,7 @@ var client = new Twitter({
 
 // Index page
 app.get('/', function (appReq, appRes) {
-	appRes.sendFile(path.join(__dirname + '/index.html'));
+	appRes.sendFile(path.join(__dirname + '/inde..html'));
 });
 
 // JSON page where our search is held
@@ -76,10 +76,26 @@ app.post('/tweets', function(appReq, appRes) {
 		results.sort(function(a, b) { 
 			return a.name < b.name;
 		});
-		var desc = event.user.description;
-		var splitStr = tokenizer.tokenize(desc); // Split by a space
-		allTweets += splitStr + ","; // Add to list of tweet words
 
+		var desc = event.user.description;
+		var splitStr = tokenizer.tokenize(desc); // Split by a space'
+		var newStr = []; 
+
+		var i = 0; 
+		while (i < splitStr.length) { 
+			if(isNaN(parseFloat(splitStr[i])) && !isFinite(splitStr[i])) { 
+				if(splitStr[i].length > 1) { 
+
+					newStr.push(splitStr[i].toLowerCase());
+				}
+			}
+			
+			i++; 
+		}
+
+		allTweets += newStr + ","; // Add to list of tweet words
+
+		console.log(newStr);
 
 	});
 
@@ -87,6 +103,10 @@ app.post('/tweets', function(appReq, appRes) {
 		//throw error;
 	});
 
+});
+
+app.get('/twitterRes', function(appReq, appRes) {
+	appRes.json(allTweets);
 });
 
 app.get('/alltweets', function(appReq, appRes) {
