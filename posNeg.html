@@ -19,9 +19,6 @@
     
     <article id="mainArticle"> 
 
-
-    <h2>Positive Negative count</h2>
-
     <table id="messages">
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     </table>
@@ -35,7 +32,7 @@
 
     // Onload of screen display data
     onload = function conversation() {
-      $.get('/allTweets', function (data) {
+      $.get('/statisticsData', function (data) {
         readMsg(data);
       });
     };
@@ -45,29 +42,14 @@
     //  window.location.reload(1);
     //}, 6000);
 
-    //Send form
-    function sendFormContent() {
-      var form = $('#message-entry');
-      var query = form.serialize();
-
-      $.post('/messages', query, function (data) {
-        readMsg(data);
-      });
-
-      $.post('/tweets', query, function (data) {
-        readMsg(data);
-      });
-      
-    }
 
     function readMsg(data) {
-      for (var i = 0; i < 15; i++) {
-        var msg = data[i];
-        var output = '<h3>'+msg.name+' (@'+msg.username+')</h3>';
-        output += '<p>'+msg.tweet+'</p>'; 
-        output += '<p><i>'+msg.time+'></i></p>';  
-        $("#messages").prepend(output); 
-      }
+      var output = '<h3> Positive Count: '+ data.positiveCount+'</h3>'; 
+      output += '<h3> Negative Count: '+data.negativeCount+'</h3>';
+      output += '<h3> Neutral Count: '+data.neutralCount+'</h3>';  
+      output += '<h3> Total Count: '+data.totalCount+'</h3>';  
+      $("#messages").prepend(output); 
+      
     }
 
   </script>
