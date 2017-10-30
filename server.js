@@ -1,3 +1,12 @@
+/*
+ * Twitter Analysis
+ * For CAB403, Assignment 1
+ * By Luke Pritchard & Lachlan Pond
+ */
+
+/*
+ * Import all relevant packages
+ */
 var express = require('express');
 var app = express();
 var path = require('path');
@@ -14,9 +23,15 @@ var sentiment = require('sentiment');
 var lookup = require('country-data').lookup;
 var cities = require("all-the-cities") 
 
+/* 
+ * Set up ports
+ */
 const hostname = '127.0.0.1';
 const port = 3000;
 
+/*
+ * Set up global variables
+ */
 var conversation = [];
 var results = [];
 var searched = ' ';
