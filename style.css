@@ -38,8 +38,12 @@ font-family: "Arial", Times, serif;
 
 svg {
   margin: auto;
-  margin-left: auto;
-  margin-right: auto;
+}
+
+#barchart {
+  width: 100vw;
+  text-align: center;
+  margin: auto;
 }
 
 #results { 

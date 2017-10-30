@@ -8,7 +8,7 @@ function drawBarGraph(array, words) {
 	var width = dataArray.length * 30;
 	var height = 500;
 
-		var body = d3.select("body")
+		var body = d3.select("#barchart")
 					.append("svg")
 						.attr("width", width)
 						.attr("height", height);
