@@ -132,6 +132,7 @@ app.post('/tweets', function(appReq, appRes) {
 
 app.get('/alltweets', function(appReq, appRes) {
 	allTweetsArray = allTweets.split(',');
+	appRes.json(allTweetsArray);
 	var tsvData = countArrayElements(allTweetsArray);
 	var dataArray = tsvData[1].sort(function(a, b){ return b-a });
 	var wordArray = refSort(tsvData[0], tsvData[1]);
@@ -147,7 +148,6 @@ app.get('/alltweets', function(appReq, appRes) {
 		}
 		console.log("The file was saved!");
 	});
-	appRes.json(allTweetsArray);
 });
 
 app.get('/tweets', function(appReq, appRes) {
@@ -176,7 +176,7 @@ app.listen(port, function () {
 function countArrayElements(array) {
 	var a = []; b = []; prev = null;
 	var arr = array;
-	arr.sort();
+	arr.slice().sort();
 	for (var i = 0; i < arr.length; i++) {
 		if (arr[i] !== prev) {
 			a.push(arr[i]);
