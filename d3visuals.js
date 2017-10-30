@@ -20,7 +20,7 @@ function drawBarGraph(array, words) {
 
 	var x = d3.scaleBand().rangeRound([0, width]).paddingInner(0.1),
 	    y = d3.scaleLinear().rangeRound([height, 0]),
-	    color = d3.scaleLinear().range(["red", "blue"]);
+	    color = d3.scaleLinear().range(["#FFAE73", "#FF5300"]);
 
 	var g = svg.append("g")
 	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -67,23 +67,18 @@ function drawBarGraph(array, words) {
 }
 
 function drawPieChart() {
-	var piechart = d3.select("#piechart")
-					.append("svg")
-					.attr("width", 960)
-					.attr("height", 500)
-					.attr("class", "pie");
 
 	var svg = d3.select(".pie"),
-    width = +svg.attr("width"),
-    height = +svg.attr("height"),
-    radius = Math.min(width, height) / 2,
-    g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+	    width = +svg.attr("width"),
+	    height = +svg.attr("height"),
+	    radius = Math.min(width, height) / 2,
+	    g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-	var color = d3.scaleOrdinal(["#98abc5", "#8a89a6", "#7b6888", "#7b6000"]);
+	var color = d3.scaleOrdinal(["#FF5300", "#FF6C00", "#FF9140"]);
 
 	var pie = d3.pie()
 	    .sort(null)
-	    .value(function(d) { return d.value; });
+	    .value(function(d) { return d.count; });
 
 	var path = d3.arc()
 	    .outerRadius(radius - 10)
@@ -93,7 +88,7 @@ function drawPieChart() {
 	    .outerRadius(radius - 40)
 	    .innerRadius(radius - 40);
 
-	d3.csv("piedata.tsv", function(d) {
+	d3.tsv("piedata.tsv", function(d) {
 	  d.count = +d.count;
 	  return d;
 	}, function(error, data) {

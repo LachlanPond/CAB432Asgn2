@@ -62,6 +62,10 @@ app.get('/wordMode', function (appReq, appRes) {
 	appRes.sendFile(path.join(__dirname + '/wordMode.html'));
 });
 
+app.get('/tweetspiechart', function (appReq, appRes) {
+	appRes.sendFile(path.join(__dirname + '/tweetspiechart.html'));
+});
+
 // JSON page where our search is held
 app.get('/messages', function(appReq, appRes) {
 	appRes.json(conversation);
@@ -196,8 +200,7 @@ app.get('/statisticsData', function(appReq, appRes) {
 
 	var statistic = [{"stat": "Positive", "count": posCount},
 					{"stat": "Negative", "count": negCount},
-					{"stat": "Neutral", "count": mutualCount},
-					{"stat": "Total", "count": totalAmount}];
+					{"stat": "Neutral", "count": mutualCount}];
 
 	tsvString = tsv.stringify(statistic);
 	fs.writeFile("piedata.tsv", tsvString, function(err) {
