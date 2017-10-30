@@ -11,6 +11,8 @@ var tokenizer = new natural.WordTokenizer();
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static('.'))
 var sentiment = require('sentiment'); 
+var lookup = require('country-data').lookup;
+var cities = require("all-the-cities") 
 
 const hostname = '127.0.0.1';
 const port = 3000;
@@ -20,6 +22,7 @@ var results = [];
 var searched = ' ';
 var allTweets = '';
 var allTweetsArray = [];
+var countries = [];
 
 // Post Neg related
 var posCount = 0; 
@@ -113,7 +116,16 @@ app.post('/tweets', function(appReq, appRes) {
 			if(isNaN(parseFloat(splitStr[i])) && !isFinite(splitStr[i])) { 
 				// Make sure not single or no charecter
 				if(splitStr[i].length > 1) { 
+
+					var france = lookup.countries({name: splitStr[i]})[0];
+					if(france == undefined) { 
+						//continue;
+					} else { 
+						countries.push(splitStr[i]);
+					}
+
 					newStr.push(nounInflector.singularize(splitStr[i].toLowerCase()));
+
 				}
 			}		
 			i++; 
@@ -154,6 +166,10 @@ app.get('/tweets', function(appReq, appRes) {
 	appRes.json(results);
 });
 
+app.get('/countries', function(appReq, appRes) {
+	appRes.json(countries);
+});
+
 
 app.get('/statistics', function(appReq, appRes) {
 	appRes.sendFile(path.join(__dirname + '/analystics.html'));
@@ -168,6 +184,8 @@ app.get('/statisticsData', function(appReq, appRes) {
 		totalCount: totalAmount
 	}
 	appRes.json(statistic);
+
+
 });
 
 app.get('/posNeg', function(appReq, appRes) {
