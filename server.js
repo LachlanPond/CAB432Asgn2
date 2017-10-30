@@ -37,7 +37,11 @@ var client = new Twitter({
 
 // Index page
 app.get('/', function (appReq, appRes) {
-	appRes.sendFile(path.join(__dirname + '/inde..html'));
+	appRes.sendFile(path.join(__dirname + '/index.html'));
+});
+
+app.get('/wordMode', function (appReq, appRes) {
+	appRes.sendFile(path.join(__dirname + '/wordMode.html'));
 });
 
 // JSON page where our search is held

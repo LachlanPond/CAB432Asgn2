@@ -1,0 +1,70 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <title>Twitter Analysis</title>
+  </head>
+  <body>
+
+    <header id="pageHeader">
+      <h1 id="mainLogo">Twitter Sentimental Analysis</h1>
+      <a href="/"><h2>Home</h2></a>
+      <a href="/statistics"><h2>Analytics</h2></a>
+      <a href="/viewmessages"><h2>User searches</h2></a>
+    </header>
+
+    <nav id="mainNav">
+      
+    </nav>
+    <div id="siteAds"></div>
+    
+    <article id="mainArticle"> 
+
+  <table id="messages">
+      <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  </table>
+
+
+      </article>
+  </body>
+
+  <script src="http://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+  <script src="d3visuals.js"></script>
+  <script src="textManipulation.js"></script>
+
+  <script>
+
+    // Onload of screen display data
+    onload = function conversation() {
+
+      $.get('/alltweets', function (data) {
+        var alltweets = countArrayElements(data);
+        drawBarGraph(alltweets[1], alltweets[0]);
+      });
+
+    };
+
+    // Refresh screen after 6 seconds; 
+    setTimeout(function(){
+      window.location.reload(1);
+    }, 6000);
+
+    //Send form
+    function sendFormContent() {
+      var form = $('#message-entry');
+      var query = form.serialize();
+
+      $.post('/messages', query, function (data) {
+        readMsg(data);
+      });
+
+      $.post('/tweets', query, function (data) {
+        readMsg(data);
+      });
+      
+    }
+
+
+  </script>
+      
+</html>
