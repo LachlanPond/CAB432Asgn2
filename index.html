@@ -53,17 +53,12 @@
       $.get('/messages', function (data) {
         document.getElementById("text").value = data[0].text;
       });
-    }//;
+    }
 
     // Refresh screen after 6 seconds; 
     setTimeout(function(){
-      window.location.reload(1);
-     //conversation();
-    }, 4000);
-
-    //$(document).ready(function() { 
-     // setInterval("coversation()", 6000);
-    //});
+       window.location.reload(1);
+    }, 5000);
 
     //Send form
     function sendFormContent() {
