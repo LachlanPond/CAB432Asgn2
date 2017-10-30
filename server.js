@@ -161,7 +161,8 @@ app.get('/alltweets', function(appReq, appRes) {
 	allTweetsArray = allTweets.split(',');
 	appRes.json(allTweetsArray);
 	var tsvData = countArrayElements(allTweetsArray);
-	var dataArray = tsvData[1].sort(function(a, b){ return b-a });
+	var dataArray = tsvData[1].sort(function(a, b){ return b-a; });
+	console.log(dataArray);
 	var wordArray = refSort(tsvData[0], tsvData[1]);
 	wordArray = wordArray[0];
 	wordArray.length = 30;
@@ -217,6 +218,7 @@ function countArrayElements(array) {
 	var a = []; b = []; prev = null;
 	var arr = array;
 	arr.slice().sort();
+	var obj = {};
 	for (var i = 0; i < arr.length; i++) {
 		if (arr[i] !== prev) {
 			a.push(arr[i]);
@@ -256,7 +258,7 @@ function refSort(target, ref) {
 	}
 
 	zipped.sort(function(a,b) {
-		return parseFloat(b.count) - parseFloat(a.count);
+		return (b.count) - (a.count);
 	});
 
 	var a = []; b = [];
