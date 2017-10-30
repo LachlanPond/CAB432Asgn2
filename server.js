@@ -159,12 +159,19 @@ app.get('/statistics', function(appReq, appRes) {
 	appRes.sendFile(path.join(__dirname + '/analystics.html'));
 });
 
+app.get('/statisticsData', function(appReq, appRes) {
+	var stats = []
+	var statistic = { 
+		positiveCount: posCount,
+		negativeCount: negCount,
+		neutralCount: mutualCount,
+		totalCount: totalAmount
+	}
+	appRes.json(statistic);
+});
+
 app.get('/posNeg', function(appReq, appRes) {
 	appRes.sendFile(path.join(__dirname + '/posNeg.html'));
-	console.log("Positive: " + posCount);
-	console.log("Negative: " + negCount); 
-	console.log("Mutal: " + mutualCount); 
-	console.log("Total: " + totalAmount);
 });
 
 

@@ -51,12 +51,6 @@
       $.get('/messages', function (data) {
         document.getElementById("text").value = data[0].text;
       });
-
-      $.get('/alltweets', function (data) {
-        var alltweets = countArrayElements(data);
-        drawBarGraph(alltweets[1], alltweets[0]);
-      });
-
     };
 
     // Refresh screen after 6 seconds; 
