@@ -97,17 +97,67 @@ app.post('/tweets', function(appReq, appRes) {
 
 	stream.on('data', function(event) {
 		
+		// Make date stamp
+		var date = event.user.created_at;
+		var dateStr = tokenizer.tokenize(date);
+
+		switch(dateStr[1]) { 
+			case 'Jan':
+				dateStr[1] = 1; 
+				break; 
+			case 'Feb': 
+				dateStr[1] = 2;
+				break;
+			case 'Mar':
+				dateStr[1] = 3;
+				break;
+			case 'Apr': 
+				dateStr[1] = 4; 
+				break;
+			case 'May':
+				dateStr[1] = 5; 
+				break; 
+			case 'Jun': 
+				dateStr[1] = 6;
+				break;
+			case 'Jul':
+				dateStr[1] = 7;
+				break;
+			case 'Aug': 
+				dateStr[1] = 8; 
+				break;
+			case 'Sep':
+				dateStr[1] = 9; 
+				break; 
+			case 'Oct': 
+				dateStr[1] = 10;
+				break;
+			case 'Nov':
+				dateStr[1] = 11;
+				break;
+			case 'Dec': 
+				dateStr[1] = 12; 
+				break;
+		}
+
+		var dateSec = dateStr[7] * 365 * 24 * 60 * 60 + //yr
+			dateStr[1] * 30 * 24 * 60 * 60 + //month
+			dateStr[2] * 24 * 60 * 60 + //dau
+			dateStr[3] * 24 * 60 + //hr
+			dateStr[4] * 60 +// mins
+			dateStr[5]; //seconds
+
 		var message = { 
 			name: event.user.name,
 			username: event.user.screen_name,
 			time: event.user.created_at,
-			tweet: event.user.description
+			tweet: event.user.description,
+			timestamp: dateSec
 		}
 
+		console.log(event.user.created_at + " " + dateSec);
+
 		results.push(message);
-		results.sort(function(a, b) { 
-			return a.name < b.name;
-		});
 
 		var desc = event.user.description;
 
@@ -179,6 +229,10 @@ app.get('/alltweets', function(appReq, appRes) {
 });
 
 app.get('/tweets', function(appReq, appRes) {
+	
+//	allTweets.sort(function(a, b) { 
+//		return a.timestamp < b.timestamp;
+//	});
 	appRes.json(results);
 });
 
