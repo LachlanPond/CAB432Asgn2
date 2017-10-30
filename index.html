@@ -43,7 +43,9 @@
   <script>
 
     // Onload of screen display data
-    onload = function conversation() {
+    onload = conversation();
+    
+    function conversation() {
         $.get('/tweets', function (data) {
         readMsg(data);
       });
@@ -51,12 +53,17 @@
       $.get('/messages', function (data) {
         document.getElementById("text").value = data[0].text;
       });
-    };
+    }//;
 
     // Refresh screen after 6 seconds; 
     setTimeout(function(){
       window.location.reload(1);
-    }, 6000);
+     //conversation();
+    }, 4000);
+
+    //$(document).ready(function() { 
+     // setInterval("coversation()", 6000);
+    //});
 
     //Send form
     function sendFormContent() {

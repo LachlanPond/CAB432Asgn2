@@ -155,7 +155,6 @@ app.post('/tweets', function(appReq, appRes) {
 			timestamp: dateSec
 		}
 
-		console.log(event.user.created_at + " " + dateSec);
 
 		results.push(message);
 
@@ -208,6 +207,7 @@ app.post('/tweets', function(appReq, appRes) {
 
 
 app.get('/alltweets', function(appReq, appRes) {
+
 	allTweetsArray = allTweets.split(',');
 	appRes.json(allTweetsArray);
 	var tsvData = countArrayElements(allTweetsArray);
