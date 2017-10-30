@@ -11,8 +11,9 @@ function drawBarGraph(array, words) {
 		var body = d3.select("#barchart")
 					.append("svg")
 						.attr("width", width)
-						.attr("height", height);
-		var svg = d3.select("svg"),
+						.attr("height", height)
+						.attr("class", "bar");
+		var svg = d3.select(".bar"),
 	    margin = {top: 20, right: 20, bottom: 100, left: 40},
 	    width = +svg.attr("width") - margin.left - margin.right,
 	    height = +svg.attr("height") - margin.top - margin.bottom;
@@ -67,21 +68,22 @@ function drawBarGraph(array, words) {
 
 function drawPieChart() {
 	var piechart = d3.select("#piechart")
-					.append("svg");
+					.append("svg")
 					.attr("width", 960)
-					.attr("height", 500);
+					.attr("height", 500)
+					.attr("class", "pie");
 
-	var svg = d3.select("svg"),
+	var svg = d3.select(".pie"),
     width = +svg.attr("width"),
     height = +svg.attr("height"),
     radius = Math.min(width, height) / 2,
     g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-	var color = d3.scaleOrdinal(["#98abc5", "#8a89a6", "#7b6888"]);
+	var color = d3.scaleOrdinal(["#98abc5", "#8a89a6", "#7b6888", "#7b6000"]);
 
 	var pie = d3.pie()
 	    .sort(null)
-	    .value(function(d) { return d.population; });
+	    .value(function(d) { return d.value; });
 
 	var path = d3.arc()
 	    .outerRadius(radius - 10)
@@ -92,7 +94,7 @@ function drawPieChart() {
 	    .innerRadius(radius - 40);
 
 	d3.csv("piedata.tsv", function(d) {
-	  d.population = +d.population;
+	  d.count = +d.count;
 	  return d;
 	}, function(error, data) {
 	  if (error) throw error;
@@ -104,11 +106,11 @@ function drawPieChart() {
 
 	  arc.append("path")
 	      .attr("d", path)
-	      .attr("fill", function(d) { return color(d.data.age); });
+	      .attr("fill", function(d) { return color(d.data.stat); });
 
 	  arc.append("text")
 	      .attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })
 	      .attr("dy", "0.35em")
-	      .text(function(d) { return d.data.age; });
+	      .text(function(d) { return d.data.stat; });
 	});
 }

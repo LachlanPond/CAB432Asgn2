@@ -46,6 +46,13 @@ svg {
   margin: auto;
 }
 
+#piechart {
+  width: 100vw;
+  text-align: center;
+  margin: auto;
+}
+
+
 #results { 
   margin-top: 30px; 
   margin-left: 60px;

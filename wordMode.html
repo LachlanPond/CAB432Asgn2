@@ -1,6 +1,18 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="./style.css">
+    <style>
+
+    .arc text {
+      font: 10px sans-serif;
+      text-anchor: middle;
+    }
+
+    .arc path {
+      stroke: #fff;
+    }
+
+    </style>
     <title>Twitter Analysis</title>
   </head>
   <body>
@@ -12,6 +24,7 @@
       <a href="/viewmessages"><h2>User searches</h2></a>
     </header>
     <div id="barchart"><h1>Top 30 Words Sorted by Occurence</h1></div>
+    <div id="piechart"><h1>Countries Mentioned in Tweets</h1></div>
   </body>
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <script src="http://d3js.org/d3.v4.min.js"></script>
@@ -29,12 +42,16 @@
         drawBarGraph(alltweets[1], alltweets[0]);
       });
 
+      $.get('/statisticsData', function (data) {
+        drawPieChart();
+      });
+
     };
 
     // Refresh screen after 6 seconds; 
     setTimeout(function(){
       window.location.reload(1);
-    }, 6000);
+    }, 30000);
 
     //Send form
     function sendFormContent() {
