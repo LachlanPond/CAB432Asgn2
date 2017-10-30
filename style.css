@@ -36,6 +36,16 @@ h4 {
 font-family: "Arial", Times, serif;
 }
 
+svg {
+  margin: auto;
+}
+
+#barchart {
+  width: 100vw;
+  text-align: center;
+  margin: auto;
+}
+
 #results { 
   margin-top: 30px; 
   margin-left: 60px;
