@@ -62,6 +62,10 @@ app.get('/wordMode', function (appReq, appRes) {
 	appRes.sendFile(path.join(__dirname + '/wordMode.html'));
 });
 
+app.get('/tweetspiechart', function (appReq, appRes) {
+	appRes.sendFile(path.join(__dirname + '/tweetspiechart.html'));
+});
+
 // JSON page where our search is held
 app.get('/messages', function(appReq, appRes) {
 	appRes.json(conversation);
@@ -212,7 +216,6 @@ app.get('/alltweets', function(appReq, appRes) {
 	appRes.json(allTweetsArray);
 	var tsvData = countArrayElements(allTweetsArray);
 	var dataArray = tsvData[1].sort(function(a, b){ return b-a; });
-	console.log(dataArray);
 	var wordArray = refSort(tsvData[0], tsvData[1]);
 	wordArray = wordArray[0];
 	wordArray.length = 30;
@@ -237,6 +240,7 @@ app.get('/tweets', function(appReq, appRes) {
 });
 
 app.get('/countries', function(appReq, appRes) {
+	countriesArray = countries.split(',');
 	appRes.json(countries);
 });
 
@@ -246,16 +250,21 @@ app.get('/statistics', function(appReq, appRes) {
 });
 
 app.get('/statisticsData', function(appReq, appRes) {
-	var stats = []
-	var statistic = { 
-		positiveCount: posCount,
-		negativeCount: negCount,
-		neutralCount: mutualCount,
-		totalCount: totalAmount
-	}
+	var stats = [];
+
+	var statistic = [{"stat": "Positive", "count": posCount},
+					{"stat": "Negative", "count": negCount},
+					{"stat": "Neutral", "count": mutualCount}];
+
+	tsvString = tsv.stringify(statistic);
+	fs.writeFile("piedata.tsv", tsvString, function(err) {
+		if(err) {
+			return console.log(err);
+		}
+		console.log("The pie data file was saved!");
+	});
+
 	appRes.json(statistic);
-
-
 });
 
 app.get('/posNeg', function(appReq, appRes) {
@@ -322,4 +331,17 @@ function refSort(target, ref) {
 	}
 
 	return [a,b];
+}
+
+function convertPieArraysToJson(a, b) {
+	var obj = [];
+	var inner = {};
+	for (var i = 0; i < a.length; i++) {
+		inner = {
+			"stat": a[i],
+			"value": b[i]
+		};
+		obj.push(inner);
+	}
+	return obj; 
 }

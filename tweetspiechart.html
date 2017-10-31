@@ -23,7 +23,8 @@
       <a href="/statistics"><h2>Analytics</h2></a>
       <a href="/viewmessages"><h2>User searches</h2></a>
     </header>
-    <div id="barchart"><h1>Top 30 Words Sorted by Occurence</h1></div>
+    <div id="piechart"><h1>Opinion on Search Queries</h1>
+      <svg class="pie" width="960" height="500"></svg></div>
   </body>
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <script src="http://d3js.org/d3.v4.min.js"></script>
@@ -36,9 +37,8 @@
     // Onload of screen display data
     onload = function conversation() {
 
-      $.get('/alltweets', function (data) {
-        var alltweets = countArrayElements(data);
-        drawBarGraph(alltweets[1], alltweets[0]);
+      $.get('/statisticsData', function (data) {
+        drawPieChart();
       });
 
     };
