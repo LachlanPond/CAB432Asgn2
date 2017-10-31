@@ -18,10 +18,14 @@ var fs = require('fs');
 var nounInflector = new natural.NounInflector();
 var tokenizer = new natural.WordTokenizer();
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(express.static('.'))
+app.use(express.static('.'));
 var sentiment = require('sentiment'); 
 var lookup = require('country-data').lookup;
-var cities = require("all-the-cities") 
+var cities = require("cities-list");
+var google = require('@google/maps');
+var checkword = require('check-word'),
+	words = checkword('en');
+var names = require('people-names');
 
 /* 
  * Set up ports
@@ -94,6 +98,7 @@ app.post('/messages', function(appReq, appRes) {
 
 app.post('/tweets', function(appReq, appRes) {
 
+	// Stream from Twitter
 	var stream = client.stream('statuses/filter', {
 		track: searched,
 		language: 'en'
@@ -105,6 +110,7 @@ app.post('/tweets', function(appReq, appRes) {
 		var date = event.user.created_at;
 		var dateStr = tokenizer.tokenize(date);
 
+		// Covert from String 'Jan' to an integer representation 
 		switch(dateStr[1]) { 
 			case 'Jan':
 				dateStr[1] = 1; 
@@ -144,6 +150,7 @@ app.post('/tweets', function(appReq, appRes) {
 				break;
 		}
 
+		// Create the time stamp in seconds (This is used for sorting the data)
 		var dateSec = dateStr[7] * 365 * 24 * 60 * 60 + //yr
 			dateStr[1] * 30 * 24 * 60 * 60 + //month
 			dateStr[2] * 24 * 60 * 60 + //dau
@@ -151,6 +158,7 @@ app.post('/tweets', function(appReq, appRes) {
 			dateStr[4] * 60 +// mins
 			dateStr[5]; //seconds
 
+		// Create the message parametets
 		var message = { 
 			name: event.user.name,
 			username: event.user.screen_name,
@@ -159,41 +167,72 @@ app.post('/tweets', function(appReq, appRes) {
 			timestamp: dateSec
 		}
 
-
+		// Add the message to the results
 		results.push(message);
 
-		var desc = event.user.description;
+		// Sort the results by timestamp
+		results.sort(function(a, b) { 
+			return b.timestamp - a.timestamp;
+		});
 
-		// Pos Neg count
-		if(sentiment(desc).score > 0) { 
+		// Use sentiment package to tell whether the message is positive or negative
+		var description = event.user.description;
+		if(sentiment(description).score > 0) { 
 			posCount++; 
-		} else if (sentiment(desc).score == 0) {
+		} else if (sentiment(description).score == 0) {
 			mutualCount++;
 		} else {  
 			negCount++; 
 		}
 		totalAmount++;
 
-		var splitStr = tokenizer.tokenize(desc); // Split by a space'
+		// Split the string to extract each word
+		var splitStr = tokenizer.tokenize(description); // Split by a space'
 		var newStr = []; 
 
+		// Begin the disection of the string by looking at each contained word
 		var i = 0; 
-		// Cycle through list
-		while (i < splitStr.length) { 
-			// Make sure not a number
-			if(isNaN(parseFloat(splitStr[i])) && !isFinite(splitStr[i])) { 
-				// Make sure not single or no charecter
-				if(splitStr[i].length > 1) { 
+		while (i < splitStr.length) { // Cycle through each word in the message
+			if(isNaN(parseFloat(splitStr[i])) && !isFinite(splitStr[i])) { // Make sure the  word is valid
+				if(splitStr[i].length > 2) { // Make sure the word is of length 
 
-					var france = lookup.countries({name: splitStr[i]})[0];
-					if(france == undefined) { 
-						//continue;
-					} else { 
-						countries.push(splitStr[i]);
-					}
+					// Singularize the word and convert is to lowercase to ensure no uncessay duplicates
+					var word = nounInflector.singularize(splitStr[i].toLowerCase());
 
-					newStr.push(nounInflector.singularize(splitStr[i].toLowerCase()));
+					// Check if an English word, or is a persons name, or is a country, or is a city
+					if(words.check(word) || names.isPersonName(word) || lookup.countries({name: word})[0] != undefined
+						|| cities[word] != undefined) { 
+						
 
+						console.log(word);
+
+						// If its a country, add to country list
+						var country = lookup.countries({name: word})[0];
+						if(country != undefined) { 
+							countries.push(splitStr[i]);
+						} 
+
+						// If it is a city, get the country
+						if(cities[name] == 1) { 
+
+							var googleClient = google.createClient({
+								key: 'AIzaSyCqJSEIN_kQHhmIO9-bBNA47Jhj-Wz-HLA', 
+							});
+							
+							googleClient.geocode({
+								address: 'Brisbane'
+								}, function(err, result){
+						
+								if(!err){
+									countries.push((result.json.results[0].address_components[2].long_name).toLowerCase);
+								}
+	
+							});
+						}
+
+					
+						newStr.push(word);
+					} 		
 				}
 			}		
 			i++; 
@@ -232,10 +271,6 @@ app.get('/alltweets', function(appReq, appRes) {
 });
 
 app.get('/tweets', function(appReq, appRes) {
-	
-//	allTweets.sort(function(a, b) { 
-//		return a.timestamp < b.timestamp;
-//	});
 	appRes.json(results);
 });
 

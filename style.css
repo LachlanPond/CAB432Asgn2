@@ -182,6 +182,7 @@ header, footer, article, nav, div {
  
 #pageHeader {
   grid-area: header;
+  margin-bottom: 20px; 
  }
  
  #pageHeader a :hover { 
