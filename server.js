@@ -212,7 +212,7 @@ app.post('/tweets', function(appReq, appRes) {
 
 						// Check if an English word, or is a persons name, or is a country, or is a city
 						if(words.check(word) || names.isPersonName(word) || lookup.countries({name: splitStr[i]})[0] != undefined
-							|| cities[word] != undefined && word != 'undefined') { 
+							|| cities[word] != undefined) { 
 							
 							newStr.push(word);
 							
