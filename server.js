@@ -171,7 +171,10 @@ app.post('/tweets', function(appReq, appRes) {
 		}
 
 		// Add the message to the results
-		results.push(message);
+		if(message.tweet != null) { 
+			results.push(message);
+		}
+		
 
 		// Sort the results by timestamp
 		results.sort(function(a, b) { 
