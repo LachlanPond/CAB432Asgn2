@@ -83,6 +83,11 @@ app.get('/viewmessages', function(appReq, appRes) {
 	appRes.sendFile(path.join(__dirname + '/messages.html'));
 });
 
+// Simple wordcloud of the most common words from the returned tweets
+app.get('/wordcloud', function(appReq, appRes) {
+	appRes.sendFile(path.join(__dirname + '/wordcloud.html'));
+});
+
 // Post the querired search 
 app.post('/messages', function(appReq, appRes) {
 
@@ -256,24 +261,24 @@ app.post('/tweets', function(appReq, appRes) {
 
 
 app.get('/alltweets', function(appReq, appRes) {
+	allTweetsNoCommas = allTweets.replace(/,/g , " ");
+	// allTweetsArray = allTweets.split(',');
+	appRes.json(allTweetsNoCommas);
+	// var tsvData = countArrayElements(allTweetsArray);
+	// var dataArray = tsvData[1].sort(function(a, b){ return b-a; });
+	// var wordArray = refSort(tsvData[0], tsvData[1]);
+	// wordArray = wordArray[0];
+	// wordArray.length = 30;
+	// dataArray.length = 30;
+	// var dataWordJson = convertTwoArraysToJson(wordArray, dataArray);
+	// tsvString = tsv.stringify(dataWordJson);
 
-	allTweetsArray = allTweets.split(',');
-	appRes.json(allTweetsArray);
-	var tsvData = countArrayElements(allTweetsArray);
-	var dataArray = tsvData[1].sort(function(a, b){ return b-a; });
-	var wordArray = refSort(tsvData[0], tsvData[1]);
-	wordArray = wordArray[0];
-	wordArray.length = 30;
-	dataArray.length = 30;
-	var dataWordJson = convertTwoArraysToJson(wordArray, dataArray);
-	tsvString = tsv.stringify(dataWordJson);
-
-	fs.writeFile("data.tsv", tsvString, function(err) {
-		if(err) {
-			return console.log(err);
-		}
-		console.log("The file was saved!");
-	});
+	// fs.writeFile("data.tsv", tsvString, function(err) {
+	// 	if(err) {
+	// 		return console.log(err);
+	// 	}
+	// 	console.log("The file was saved!");
+	// });
 });
 
 app.get('/tweets', function(appReq, appRes) {
@@ -282,6 +287,22 @@ app.get('/tweets', function(appReq, appRes) {
 
 app.get('/countries', function(appReq, appRes) {
 	appRes.json(countries);
+	var tsvData = countArrayElements(countries);
+	var dataArray = tsvData[1].sort(function(a, b){ return b-a; });
+	var wordArray = refSort(tsvData[0], tsvData[1]);
+	wordArray = wordArray[0];
+	wordArray.length = 10;
+	dataArray.length = 10;
+	var dataWordJson = convertTwoArraysToJson(wordArray, dataArray);
+	tsvString = tsv.stringify(dataWordJson);
+
+	fs.writeFile("countrydata.tsv", tsvString, function(err) {
+		if(err) {
+			return console.log(err);
+		}
+		console.log("The file was saved!");
+	});
+
 });
 
 
@@ -290,11 +311,12 @@ app.get('/statistics', function(appReq, appRes) {
 });
 
 app.get('/statisticsData', function(appReq, appRes) {
+	var perc = 100 / (posCount + negCount + mutualCount);
 	var stats = [];
 
-	var statistic = [{"stat": "Positive", "count": posCount},
-					{"stat": "Negative", "count": negCount},
-					{"stat": "Neutral", "count": mutualCount}];
+	var statistic = [{"stat": "Positive " + Math.round(posCount*perc) + "%" , "count": posCount},
+					{"stat": "Negative " + Math.round(negCount*perc) + "%" , "count": negCount},
+					{"stat": "Neutral " + Math.round(mutualCount*perc) + "%" , "count": mutualCount}];
 
 	tsvString = tsv.stringify(statistic);
 	fs.writeFile("piedata.tsv", tsvString, function(err) {
@@ -340,7 +362,7 @@ function convertTwoArraysToJson(a, b) {
 	var inner = {};
 	for (var i = 0; i < a.length; i++) {
 		inner = {
-			"word": a[i],
+			"country": a[i],
 			"count": b[i]
 		};
 		obj.push(inner);

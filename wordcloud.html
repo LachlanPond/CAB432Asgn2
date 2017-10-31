@@ -11,39 +11,22 @@
       <a href="/statistics"><h2>Analytics</h2></a>
       <a href="/viewmessages"><h2>User searches</h2></a>
     </header>
-    <div id="barchart"><h1>Top 30 Words</h1></div>
+    <div id="wordcloud"><h1>Top 30 Words</h1></div>
   </body>
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-  <script src="http://d3js.org/d3.v4.min.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
   <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
   <script src="node_modules/d3-cloud/build/d3.layout.cloud.js"></script>
   <script src="d3visuals.js"></script>
   <script src="textManipulation.js"></script>
+  <script src="cloud.js"></script>
 
   <script>
-
-  var words = ["Hello", "world", "normally", "you", "want", "more", "words", "than", "this"]
-    .map(function(d) {
-      return {text: d, size: 10 + Math.random() * 90};
-    });
-
-  d3.layout.cloud()
-    .size([960, 500])
-    .canvas(function() { return document.createElement("canvas").style("width: 900; height: 900;"); })
-    .words(words)
-    .padding(5)
-    .rotate(function() { return ~~(Math.random() * 2) * 90; })
-    .font("Impact")
-    .fontSize(function(d) { return d.size; })
-    .on("end", end)
-    .start();
-
-  function end(words) { console.log(JSON.stringify(words)); };
     // Onload of screen display data
     onload = function conversation() {
 
       $.get('/alltweets', function (data) {
-        
+        drawWordCloud(data);
       });
 
     };
