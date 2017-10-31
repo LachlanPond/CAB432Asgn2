@@ -200,27 +200,30 @@ app.post('/tweets', function(appReq, appRes) {
 					var word = nounInflector.singularize(splitStr[i].toLowerCase());
 
 					// Check if an English word, or is a persons name, or is a country, or is a city
-					if(words.check(word) || names.isPersonName(word) || lookup.countries({name: word})[0] != undefined
+					if(words.check(word) || names.isPersonName(word) || lookup.countries({name: splitStr[i]})[0] != undefined
 						|| cities[word] != undefined) { 
 						
-
-						console.log(word);
-
+						newStr.push(word);
+						
+						console.log(word); 
+			
+						
 						// If its a country, add to country list
-						var country = lookup.countries({name: word})[0];
+						var country = lookup.countries({name: splitStr[i]})[0];
 						if(country != undefined) { 
 							countries.push(splitStr[i]);
 						} 
-
+						
 						// If it is a city, get the country
-						if(cities[name] == 1) { 
+						if(cities[word] == 1) { 
 
+							
 							var googleClient = google.createClient({
 								key: 'AIzaSyCqJSEIN_kQHhmIO9-bBNA47Jhj-Wz-HLA', 
 							});
 							
 							googleClient.geocode({
-								address: 'Brisbane'
+								address: word
 								}, function(err, result){
 						
 								if(!err){
@@ -228,10 +231,7 @@ app.post('/tweets', function(appReq, appRes) {
 								}
 	
 							});
-						}
-
-					
-						newStr.push(word);
+						}					
 					} 		
 				}
 			}		
@@ -275,7 +275,6 @@ app.get('/tweets', function(appReq, appRes) {
 });
 
 app.get('/countries', function(appReq, appRes) {
-	countriesArray = countries.split(',');
 	appRes.json(countries);
 });
 
