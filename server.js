@@ -207,11 +207,11 @@ app.post('/tweets', function(appReq, appRes) {
 
 						// Check if an English word, or is a persons name, or is a country, or is a city
 						if(words.check(word) || names.isPersonName(word) || lookup.countries({name: splitStr[i]})[0] != undefined
-							|| cities[word] != undefined) { 
+							|| cities[word] != undefined && word != 'undefined') { 
 							
 							newStr.push(word);
 							
-							//console.log(word); 
+							console.log(word); 
 				
 							
 							// If its a country, add to country list
@@ -306,10 +306,6 @@ app.get('/statisticsData', function(appReq, appRes) {
 	});
 
 	appRes.json(statistic);
-});
-
-app.get('/posNeg', function(appReq, appRes) {
-	appRes.sendFile(path.join(__dirname + '/posNeg.html'));
 });
 
 
