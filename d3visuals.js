@@ -7,7 +7,7 @@ function drawBarGraph(array, words) {
 
 	var width = dataArray.length * 80;
 	var height = 500;
-
+	
 		var body = d3.select("#barchart")
 					.append("svg")
 						.attr("width", width)
@@ -131,6 +131,7 @@ var words = text_string.split(/[ '\-\(\)\*":;\[\]|{},.!?]+/);
     })
   }
 
+word_count.length = 30;
 var svg_location = "#wordcloud";
 var width = $(document).width();
 var height = $(document).height();

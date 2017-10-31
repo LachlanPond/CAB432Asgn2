@@ -263,23 +263,7 @@ app.post('/tweets', function(appReq, appRes) {
 
 app.get('/alltweets', function(appReq, appRes) {
 	allTweetsNoCommas = allTweets.replace(/,/g , " ");
-	// allTweetsArray = allTweets.split(',');
 	appRes.json(allTweetsNoCommas);
-	// var tsvData = countArrayElements(allTweetsArray);
-	// var dataArray = tsvData[1].sort(function(a, b){ return b-a; });
-	// var wordArray = refSort(tsvData[0], tsvData[1]);
-	// wordArray = wordArray[0];
-	// wordArray.length = 30;
-	// dataArray.length = 30;
-	// var dataWordJson = convertTwoArraysToJson(wordArray, dataArray);
-	// tsvString = tsv.stringify(dataWordJson);
-
-	// fs.writeFile("data.tsv", tsvString, function(err) {
-	// 	if(err) {
-	// 		return console.log(err);
-	// 	}
-	// 	console.log("The file was saved!");
-	// });
 });
 
 app.get('/tweets', function(appReq, appRes) {
@@ -288,7 +272,11 @@ app.get('/tweets', function(appReq, appRes) {
 
 app.get('/countries', function(appReq, appRes) {
 	appRes.json(countries);
+
+	/* ---Modify the data to make it saveable as a .tsv file--- */
+	// Count the amount of times each country was mentioned
 	var tsvData = countArrayElements(countries);
+	// Split the data into two arrays and sort both from highest count to lowest
 	var dataArray = tsvData[1].sort(function(a, b){ return b-a; });
 	var wordArray = refSort(tsvData[0], tsvData[1]);
 	wordArray = wordArray[0];
