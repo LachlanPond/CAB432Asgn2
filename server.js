@@ -38,7 +38,8 @@ const port = 3000;
  */
 var conversation = [];
 var results = [];
-var searched = ' ';
+var searched = '';
+var currentlySearched = '';
 var allTweets = '';
 var allTweetsArray = [];
 var countries = [];
@@ -62,10 +63,12 @@ app.get('/', function (appReq, appRes) {
 	appRes.sendFile(path.join(__dirname + '/index.html'));
 });
 
+// Graph of words
 app.get('/wordMode', function (appReq, appRes) {
 	appRes.sendFile(path.join(__dirname + '/wordMode.html'));
 });
 
+// Pie chart of positive/negatives
 app.get('/tweetspiechart', function (appReq, appRes) {
 	appRes.sendFile(path.join(__dirname + '/tweetspiechart.html'));
 });
@@ -105,7 +108,7 @@ app.post('/tweets', function(appReq, appRes) {
 	});
 
 	stream.on('data', function(event) {
-		
+
 		// Make date stamp
 		var date = event.user.created_at;
 		var dateStr = tokenizer.tokenize(date);
@@ -205,7 +208,7 @@ app.post('/tweets', function(appReq, appRes) {
 						
 						newStr.push(word);
 						
-						console.log(word); 
+						//console.log(word); 
 			
 						
 						// If its a country, add to country list

@@ -51,7 +51,7 @@
       });
 
       $.get('/messages', function (data) {
-        document.getElementById("text").value = data[0].text;
+        document.getElementById("text").value = data[data.length-1].text;
       });
     }
 
