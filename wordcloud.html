@@ -22,19 +22,13 @@
   <script src="cloud.js"></script>
 
   <script>
-    // Onload of screen display data
-    onload = function conversation() {
-
+    // Update the wordcloud every 5 seconds
+    setInterval(function() {
       $.get('/alltweets', function (data) {
         drawWordCloud(data);
       });
+    }, 10000);
 
-    };
-
-    // Refresh screen after 6 seconds; 
-    setTimeout(function(){
-      window.location.reload(1);
-    }, 6000);
 
     //Send form
     function sendFormContent() {

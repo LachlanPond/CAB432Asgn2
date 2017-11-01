@@ -32,21 +32,13 @@
   <script src="textManipulation.js"></script>
 
   <script>
-
-    // Onload of screen display data
-    onload = function conversation() {
-
+    // Refresh the bar chart data every second
+    setInterval(function() {
       $.get('/countries', function (data) {
         var alltweets = countArrayElements(data);
         drawBarGraph(alltweets[1], alltweets[0]);
       });
-
-    };
-
-    // Refresh screen after 6 seconds; 
-    setTimeout(function(){
-      window.location.reload(1);
-    }, 30000);
+    }, 1000);
 
     //Send form
     function sendFormContent() {

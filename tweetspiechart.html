@@ -34,14 +34,12 @@
 
   <script>
 
-    // Onload of screen display data
-    onload = function conversation() {
-
+    // Loop every second to update the pie chart
+    setInterval(function() {
       $.get('/statisticsData', function (data) {
         drawPieChart();
       });
-
-    };
+    }, 1000);
 
     // Refresh screen after 6 seconds; 
     setTimeout(function(){
