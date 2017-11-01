@@ -28,7 +28,8 @@ RUN npm install npm \
 	npm install cities-list \
 	npm install @google/maps \
 	npm install check-word \
-	npm install people-names
+	npm install people-names \
+	npm install pm2 -g
 
 
 # Copy the server and node_module folders into the docker app
@@ -42,4 +43,4 @@ EXPOSE 3000
 WORKDIR .
 
 # Start the simple express server to host the static html page
-CMD node server
+CMD pm2-docker server
