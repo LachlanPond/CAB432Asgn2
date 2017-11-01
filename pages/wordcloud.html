@@ -9,7 +9,6 @@
       <h1 id="mainLogo">Twitter Tracker & Analysis</h1>
       <a href="/"><h2>Home</h2></a>
       <a href="/statistics"><h2>Analytics</h2></a>
-      <a href="/viewmessages"><h2>User searches</h2></a>
     </header>
     <div id="wordcloud"></div>
   </body>
@@ -27,7 +26,7 @@
       $.get('/alltweets', function (data) {
         drawWordCloud(data);
       });
-    }, 1000);
+    }, 3000);
 
 
     //Send form
