@@ -132,8 +132,8 @@ var words = text_string.split(/[ '\-\(\)\*":;\[\]|{},.!?]+/);
   }
 
 var svg_location = "#wordcloud";
-var width = $(document).width();
-var height = $(document).height();
+var width = 2100;
+var height = 1000;
 
 var fill = d3.scale.category20();
 
@@ -157,6 +157,7 @@ d3.layout.cloud().size([width, height])
   .start();
 
 function draw(words) {
+	document.getElementById("wordcloud").innerHTML = "";
   d3.select(svg_location).append("svg")
       .attr("width", width)
       .attr("height", height)
