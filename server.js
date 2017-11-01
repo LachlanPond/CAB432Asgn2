@@ -1,6 +1,6 @@
 /*
  * Twitter Analysis
- * For CAB403, Assignment 1
+ * For CAB403, Assignment 2
  * By Luke Pritchard & Lachlan Pond
  */
 
@@ -44,13 +44,24 @@ var allTweets = '';
 var allTweetsArray = [];
 var countries = [];
 
-// Post Neg related
+// Make sure top 15 file is deleted
+fs.writeFile("top15.txt", '', function(err) { 
+	if(err) { 
+		return console.log(err); 
+	}
+});
+
+/*
+ * Set up variables relating positive and 
+ * negative count for pie chart */ 
 var posCount = 0; 
 var negCount = 0;
 var mutualCount = 0;  
 var totalAmount = 0;
 
-// Set up our Twitter client ID
+/*
+ * Set up Twitter client keys
+ */ 
 var client = new Twitter({ 
 	consumer_key: 'arqa9nkL9XPIgHfnPGGc1qan6',
 	consumer_secret: '57KUJIkZgdEUakKpLTQ7iLkHXXCef144IHZ4h0yVCcRpKMBs9R',
@@ -58,37 +69,67 @@ var client = new Twitter({
 	access_token_secret: '0NRjoZBaNahTqGZsKrVNjFw41JJLneromZBn5LoqSNmTw'
 });
 
-// Index page
+/*
+ * Method: Get
+ * Source: '/'
+ * Output: Results of the searched stream
+ */
 app.get('/', function (appReq, appRes) {
 	appRes.sendFile(path.join(__dirname + '/index.html'));
 });
 
-// Graph of words
+/*
+ * Method: Get
+ * Source: '/wordMode'
+ * Output: Graph showing modal of words
+ */
 app.get('/wordMode', function (appReq, appRes) {
 	appRes.sendFile(path.join(__dirname + '/wordMode.html'));
 });
 
-// Pie chart of positive/negatives
+/*
+ * Method: Get
+ * Source: '/tweetspiechart'
+ * Output: Pie chart of ration of positive and negative
+ * tweets
+ */
 app.get('/tweetspiechart', function (appReq, appRes) {
 	appRes.sendFile(path.join(__dirname + '/tweetspiechart.html'));
 });
 
-// JSON page where our search is held
+/*
+ * Method: Get
+ * Source: '/messages'
+ * Output: JSON object of all the tweets
+ */
 app.get('/messages', function(appReq, appRes) {
 	appRes.json(conversation);
 });
 
-// User frendly GUI displaying JSON results of querired searches
+/*
+ * Method: Get
+ * Source: '/viewmessages'
+ * Output: All the user entered searches in the system
+ */
 app.get('/viewmessages', function(appReq, appRes) {
 	appRes.sendFile(path.join(__dirname + '/messages.html'));
 });
 
-// Simple wordcloud of the most common words from the returned tweets
+/*
+ * Method: Get
+ * Source: '/wordcloud'
+ * Output: Wordcloud of modal of result words
+ */
 app.get('/wordcloud', function(appReq, appRes) {
 	appRes.sendFile(path.join(__dirname + '/wordcloud.html'));
 });
 
-// Post the querired search 
+/*
+ * Method: Post
+ * Source: '/messages'
+ * Output: Adds the queried stream into the list
+ * 'conversation' 
+ */
 app.post('/messages', function(appReq, appRes) {
 
 	var message = {
@@ -104,6 +145,13 @@ app.post('/messages', function(appReq, appRes) {
 	
 });
 
+/*
+ * Method: Post
+ * Source: '/tweets'
+ * Output: Stream from the queried input adding all
+ * tweets to the list 'result'. Also filters each individual
+ * word and adds to the required list
+ */
 app.post('/tweets', function(appReq, appRes) {
 
 	// Stream from Twitter
@@ -112,6 +160,7 @@ app.post('/tweets', function(appReq, appRes) {
 		language: 'en'
 	});
 
+	// Start the stream
 	stream.on('data', function(event) {
 
 		// Make date stamp
@@ -161,24 +210,24 @@ app.post('/tweets', function(appReq, appRes) {
 		// Create the time stamp in seconds (This is used for sorting the data)
 		var dateSec = dateStr[7] * 365 * 24 * 60 * 60 + //yr
 			dateStr[1] * 30 * 24 * 60 * 60 + //month
-			dateStr[2] * 24 * 60 * 60 + //dau
+			dateStr[2] * 24 * 60 * 60 + //day
 			dateStr[3] * 24 * 60 + //hr
 			dateStr[4] * 60 +// mins
 			dateStr[5]; //seconds
 
-		// Create the message parametets
+		// Create result JSON parameters
 		var message = { 
-			name: event.user.name,
+			name: event.user.name, 
 			username: event.user.screen_name,
 			time: event.user.created_at,
 			tweet: event.user.description,
 			timestamp: dateSec
 		}
 
-		// Make sure is a valid tweet
+		// Make sure is a valid tweet and not empty
 		if(message.tweet != null) {
 			
-			// Add the message to the results
+			// Add the message to the results array as JSON
 			results.push(message);
 		
 			// Sort the results by timestamp
@@ -186,13 +235,42 @@ app.post('/tweets', function(appReq, appRes) {
 				return b.timestamp - a.timestamp;
 			});
 
+		
+			var output = "";
+			var count = 0;
+
+			// Find the length of the results,
+			// Make sure we dont take more than the top
+			// 15 results
+			if(results.length < 15) { 
+				count = results.length-1;
+			} else { 
+				count = 14;
+			}
+
+			// Add the top 15 to the results
+			while(count > -1) { 
+				var msg = results[count];
+				output += '<h3>'+msg.name+' (@'+msg.username+')</h3>';
+				output += '<p>'+msg.tweet+'</p>'; 
+				output += '<p><i>'+msg.time+'</i></p>';
+				count--;
+			}
+
+			// Write the top 15 to the results file 
+			fs.writeFile("top15.txt", output, function(err) { 
+				if(err) { 
+					return console.log(err); 
+				}
+			});
+
 			// Use sentiment package to tell whether the message is positive or negative
 			var description = event.user.description;
-			if(sentiment(description).score > 0) { 
+			if(sentiment(description).score > 0) { // Positive post
 				posCount++; 
-			} else if (sentiment(description).score == 0) {
+			} else if (sentiment(description).score == 0) { // Neutral post
 				mutualCount++;
-			} else {  
+			} else {  // Negative post
 				negCount++; 
 			}
 			totalAmount++;
@@ -214,33 +292,30 @@ app.post('/tweets', function(appReq, appRes) {
 						if(words.check(word) || names.isPersonName(word) || lookup.countries({name: splitStr[i]})[0] != undefined
 							|| cities[word] != undefined) { 
 							
-							newStr.push(word);
-							
-							console.log(word); 
-				
+							newStr.push(word); // Add word to list of words
 							
 							// If its a country, add to country list
 							var country = lookup.countries({name: splitStr[i]})[0];
 							if(country != undefined) { 
-								countries.push(splitStr[i]);
+								countries.push(splitStr[i]); // Add country to list of countries
 							} 
 							
 							// If it is a city, get the country
 							if(cities[word] == 1) { 
 
-								
+								// Set up the Google client
 								var googleClient = google.createClient({
 									key: 'AIzaSyCqJSEIN_kQHhmIO9-bBNA47Jhj-Wz-HLA', 
 								});
 								
+								// Query the inputted city
 								googleClient.geocode({
 									address: word
 									}, function(err, result){
-							
+									// Add the country name to the list of countries
 									if(!err){
 										countries.push((result.json.results[0].address_components[2].long_name).toLowerCase);
 									}
-		
 								});
 							}					
 						} 		
@@ -249,27 +324,37 @@ app.post('/tweets', function(appReq, appRes) {
 				i++; 
 			}
 		}
-
 		allTweets += newStr + ","; // Add to list of tweet words
-
 	});
-
-	stream.on('error', function(error) {
-		//throw error;
-	});
-
 });
 
 
+/*
+ * Method: Get
+ * Source: '/alltweets'
+ * Output: JSON array of all tweets with no commas involved
+ */
 app.get('/alltweets', function(appReq, appRes) {
 	allTweetsNoCommas = allTweets.replace(/,/g , " ");
 	appRes.json(allTweetsNoCommas);
 });
 
+/*
+ * Method: Get
+ * Source: '/tweets'
+ * Output: JSON array of all the recieved tweets
+ */
 app.get('/tweets', function(appReq, appRes) {
 	appRes.json(results);
 });
 
+
+
+/*
+ * Method: Get
+ * Source: '/countries'
+ * Output: List of all the detected countries
+ */
 app.get('/countries', function(appReq, appRes) {
 	appRes.json(countries);
 
@@ -294,11 +379,20 @@ app.get('/countries', function(appReq, appRes) {
 
 });
 
-
+/*
+ * Method: Get
+ * Source: '/statistics'
+ * Output: Options to choose which statistic to view
+ */
 app.get('/statistics', function(appReq, appRes) {
 	appRes.sendFile(path.join(__dirname + '/analystics.html'));
 });
 
+/*
+ * Method: Get
+ * Source: '/statisticsdata'
+ * Output: ALl the statistical data fro the graphs
+ */
 app.get('/statisticsData', function(appReq, appRes) {
 	var perc = 100 / (posCount + negCount + mutualCount);
 	var stats = [];
@@ -318,12 +412,28 @@ app.get('/statisticsData', function(appReq, appRes) {
 	appRes.json(statistic);
 });
 
+/*
+ * Method: Get
+ * Source: 'any invalid source file'
+ * Output: error handling page
+ */
+app.get('/*', function(appReq, appRes) {
+	appRes.sendFile(path.join(__dirname + '/error.html'));
+});
 
-// Set listening prot
+
+/*
+ * Start listening on the server
+ */
 app.listen(port, function () {
     console.log(`Express app listening at http://${hostname}:${port}/`);
 });
 
+
+
+/*
+ * Count all the elements in the array
+ */
 function countArrayElements(array) {
 	var a = []; b = []; prev = null;
 	var arr = array;
@@ -342,6 +452,9 @@ function countArrayElements(array) {
 	return [a,b];
 }
 
+/*
+ * Convert twoarrays to JSON
+ */
 function convertTwoArraysToJson(a, b) {
 	var obj = [];
 	var inner = {};
@@ -355,6 +468,9 @@ function convertTwoArraysToJson(a, b) {
 	return obj; 
 }
 
+/*
+ * Sort via zipped file
+ */
 function refSort(target, ref) {
 	// Create array of indices
 	var zipped = [];
@@ -380,6 +496,9 @@ function refSort(target, ref) {
 	return [a,b];
 }
 
+/*
+ * Convert pie data to JSON 
+ */
 function convertPieArraysToJson(a, b) {
 	var obj = [];
 	var inner = {};
