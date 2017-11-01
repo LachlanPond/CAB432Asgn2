@@ -69,6 +69,9 @@ var client = new Twitter({
 	access_token_secret: '0NRjoZBaNahTqGZsKrVNjFw41JJLneromZBn5LoqSNmTw'
 });
 
+var birds = require('./nodeJS/tes'); 
+app.use('/testing', birds);
+
 /*
  * Method: Get
  * Source: '/'
