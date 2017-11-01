@@ -235,21 +235,29 @@ app.post('/tweets', function(appReq, appRes) {
 				return b.timestamp - a.timestamp;
 			});
 
+		
 			var output = "";
 			var count = 0;
+
+			// Find the length of the results,
+			// Make sure we dont take more than the top
+			// 15 results
 			if(results.length < 15) { 
 				count = results.length-1;
 			} else { 
 				count = 14;
 			}
+
+			// Add the top 15 to the results
 			while(count > -1) { 
-				// Add most recent 15 to file
 				var msg = results[count];
 				output += '<h3>'+msg.name+' (@'+msg.username+')</h3>';
 				output += '<p>'+msg.tweet+'</p>'; 
 				output += '<p><i>'+msg.time+'</i></p>';
 				count--;
 			}
+
+			// Write the top 15 to the results file 
 			fs.writeFile("top15.txt", output, function(err) { 
 				if(err) { 
 					return console.log(err); 

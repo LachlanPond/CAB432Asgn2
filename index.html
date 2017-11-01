@@ -5,33 +5,32 @@
   </head>
   <body>
 
+    <!-- File header -->
     <header id="pageHeader">
       <h1 id="mainLogo">Twitter Sentimental Analysis</h1>
       <a href="/"><h2>Home</h2></a>
       <a href="/statistics"><h2>Analytics</h2></a>
       <a href="/viewmessages"><h2>User searches</h2></a>
     </header>
-
-    <nav id="mainNav">
-      
+    <nav id="mainNav">   
     </nav>
-    <div id="siteAds"></div>
-    
+    <div id="siteAds"></div> 
     <article id="mainArticle"> 
 
-    <form id ="message-entry" method="post" action="javascript:sendFormContent()">
-      <h1>by Luke Pritchard & Lachlan Pond</h1>
-      <h4>Please enter key words to search including hashtags seperated by a comma</h4>
-      <input type="Text" name="text" id="text"><br><br>
-      <input type="submit" id="submit" value="Go">
-    </form>
-  <h2>Results</h2>
+      <!-- Input from --> 
+      <form id ="message-entry" method="post" action="javascript:sendFormContent()">
+        <h1>by Luke Pritchard & Lachlan Pond</h1>
+        <h4>Please enter key words to search including hashtags seperated by a comma</h4>
+        <input type="Text" name="text" id="text"><br><br>
+        <input type="submit" id="submit" value="Go">
+      </form>
 
-  <table id="messages" style="margin:auto;">
-      <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-  </table>
-
-
+      <!-- Start of results -->
+      <h2>Results</h2>
+      <table id="messages" style="margin:auto;">
+          <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+      </table>
+      
       </article>
   </body>
 
@@ -43,41 +42,30 @@
   <script>
 
     //Onload of screen display data
-    onload = conversation();
-    
+    onload = conversation();  
     function conversation() {
-      //  $.get('/tweets', function (data) {
-       // readMsg(data);
-     // });
-
-      $.get('/messages', function (data) {
-        document.getElementById("text").value = data[data.length-1].text;
-      });
       loadDoc();
     }
 
-    // Refresh screen after 6 seconds; 
+    // Refresh screen after 1 seconds; 
     setInterval(function() {
        loadDoc();
     }, 1000);
 
-  function loadDoc() {
-  
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("messages").innerHTML =
-      this.responseText;
+    // Display the data on the screen in the messages tag
+    function loadDoc() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("messages").innerHTML =
+        this.responseText;
+      }
+    };
+    xhttp.open("GET", "/top15.txt", true);
+    xhttp.send();
     }
-  };
-  
-  xhttp.open("GET", "/top15.txt", true);
-  
-  xhttp.send();
 
-  }
-
-    //Send form
+    // Send form data
     function sendFormContent() {
       var form = $('#message-entry');
       var query = form.serialize();
@@ -92,6 +80,7 @@
       
     }
 
+    // Get the JSON objects required
     function readMsg(data) {
       for (var i = 14; i > -1; i--) {
         var msg = data[i];
