@@ -164,8 +164,9 @@ app.post('/tweets', function(appReq, appRes) {
 	stream.on('data', function(event) {
 
 		// Make date stamp
-		var date = event.user.created_at;
-		var dateStr = tokenizer.tokenize(date);
+		if (event.user != undefined) {
+			var date = event.user.created_at;
+			var dateStr = tokenizer.tokenize(date);
 
 		// Covert from String 'Jan' to an integer representation 
 		switch(dateStr[1]) { 
@@ -223,7 +224,6 @@ app.post('/tweets', function(appReq, appRes) {
 			tweet: event.user.description,
 			timestamp: dateSec
 		}
-
 		// Make sure is a valid tweet and not empty
 		if(message.tweet != null) {
 			
@@ -325,6 +325,7 @@ app.post('/tweets', function(appReq, appRes) {
 			}
 		}
 		allTweets += newStr + ","; // Add to list of tweet words
+	}
 	});
 });
 
