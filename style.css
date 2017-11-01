@@ -213,6 +213,7 @@ header, footer, article, nav, div {
 #mainArticle { 
   grid-area: article;
   margin:auto;
+  margin-top:30px;
 
   }
  
