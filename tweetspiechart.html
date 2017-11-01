@@ -21,7 +21,6 @@
       <h1 id="mainLogo">Twitter Sentimental Analysis</h1>
       <a href="/"><h2>Home</h2></a>
       <a href="/statistics"><h2>Analytics</h2></a>
-      <a href="/viewmessages"><h2>User searches</h2></a>
     </header>
     <div id="piechart"><h1>Opinion on Search Queries</h1>
       <svg class="pie" width="960" height="500"></svg></div>
@@ -40,11 +39,6 @@
         drawPieChart();
       });
     }, 1000);
-
-    // Refresh screen after 6 seconds; 
-    setTimeout(function(){
-      window.location.reload(1);
-    }, 30000);
 
     //Send form
     function sendFormContent() {
