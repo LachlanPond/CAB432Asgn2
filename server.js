@@ -44,6 +44,13 @@ var allTweets = '';
 var allTweetsArray = [];
 var countries = [];
 
+// Make sure top 15 file is deleted
+fs.writeFile("top15.txt", '', function(err) { 
+	if(err) { 
+		return console.log(err); 
+	}
+});
+
 /*
  * Set up variables relating positive and 
  * negative count for pie chart */ 
@@ -228,6 +235,27 @@ app.post('/tweets', function(appReq, appRes) {
 				return b.timestamp - a.timestamp;
 			});
 
+			var output = "";
+			var count = 0;
+			if(results.length < 15) { 
+				count = results.length-1;
+			} else { 
+				count = 14;
+			}
+			while(count > -1) { 
+				// Add most recent 15 to file
+				var msg = results[count];
+				output += '<h3>'+msg.name+' (@'+msg.username+')</h3>';
+				output += '<p>'+msg.tweet+'</p>'; 
+				output += '<p><i>'+msg.time+'</i></p>';
+				count--;
+			}
+			fs.writeFile("top15.txt", output, function(err) { 
+				if(err) { 
+					return console.log(err); 
+				}
+			});
+
 			// Use sentiment package to tell whether the message is positive or negative
 			var description = event.user.description;
 			if(sentiment(description).score > 0) { // Positive post
@@ -311,6 +339,8 @@ app.get('/alltweets', function(appReq, appRes) {
 app.get('/tweets', function(appReq, appRes) {
 	appRes.json(results);
 });
+
+
 
 /*
  * Method: Get

@@ -27,7 +27,7 @@
     </form>
   <h2>Results</h2>
 
-  <table id="messages">
+  <table id="messages" style="margin:auto;">
       <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   </table>
 
@@ -42,23 +42,40 @@
 
   <script>
 
-    // Onload of screen display data
+    //Onload of screen display data
     onload = conversation();
     
     function conversation() {
-        $.get('/tweets', function (data) {
-        readMsg(data);
-      });
+      //  $.get('/tweets', function (data) {
+       // readMsg(data);
+     // });
 
       $.get('/messages', function (data) {
         document.getElementById("text").value = data[data.length-1].text;
       });
+      loadDoc();
     }
 
     // Refresh screen after 6 seconds; 
-    setTimeout(function() {
-       window.location.reload(1);
-    }, 5000);
+    setInterval(function() {
+       loadDoc();
+    }, 1000);
+
+  function loadDoc() {
+  
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("messages").innerHTML =
+      this.responseText;
+    }
+  };
+  
+  xhttp.open("GET", "/top15.txt", true);
+  
+  xhttp.send();
+
+  }
 
     //Send form
     function sendFormContent() {
