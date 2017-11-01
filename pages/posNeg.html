@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="./stylesheet/style.css">
+    <title>Twitter Analysis</title>
+  </head>
+  <body>
+
+    <header id="pageHeader">
+      <h1 id="mainLogo">Twitter Tracker & Analysis</h1>
+      <a href="/"><h2>Home</h2></a>
+      <a href="/statistics"><h2>Analytics</h2></a>
+      <a href="/viewmessages"><h2>User searches</h2></a>
+    </header>
+
+    <nav id="mainNav">
+      
+    </nav>
+    <div id="siteAds"></div>
+    
+    <article id="mainArticle"> 
+
+    <table id="messages">
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    </table>
+  
+
+      </article>
+  </body>
+
+
+  <script>
+
+    // Onload of screen display data
+    onload = function conversation() {
+      $.get('/statisticsData', function (data) {
+        readMsg(data);
+      });
+    };
+
+    // Refresh screen after 6 seconds; 
+  //  setTimeout(function(){
+    //  window.location.reload(1);
+    //}, 6000);
+
+
+    function readMsg(data) {
+      var output = '<h3> Positive Count: '+ data.positiveCount+'</h3>'; 
+      output += '<h3> Negative Count: '+data.negativeCount+'</h3>';
+      output += '<h3> Neutral Count: '+data.neutralCount+'</h3>';  
+      output += '<h3> Total Count: '+data.totalCount+'</h3>';  
+      $("#messages").prepend(output); 
+      
+    }
+
+  </script>
+
+</html>

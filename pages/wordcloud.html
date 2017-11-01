@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="./stylesheet/style.css">
+    <title>Twitter Analysis</title>
+  </head>
+  <body>
+
+    <header id="pageHeader">
+      <h1 id="mainLogo">Twitter Tracker & Analysis</h1>
+      <a href="/"><h2>Home</h2></a>
+      <a href="/statistics"><h2>Analytics</h2></a>
+      <a href="/viewmessages"><h2>User searches</h2></a>
+    </header>
+    <div id="wordcloud"></div>
+  </body>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+  <script src="node_modules/d3-cloud/build/d3.layout.cloud.js"></script>
+  <script src="jsfiles/d3visuals.js"></script>
+  <script src="jsfiles/textManipulation.js"></script>
+  <script src="jsfiles/cloud.js"></script>
+
+  <script>
+    // Update the wordcloud every 5 seconds
+    setInterval(function() {
+      $.get('/alltweets', function (data) {
+        drawWordCloud(data);
+      });
+    }, 2000);
+
+
+    //Send form
+    function sendFormContent() {
+      var form = $('#message-entry');
+      var query = form.serialize();
+
+      $.post('/messages', query, function (data) {
+        readMsg(data);
+      });
+
+      $.post('/tweets', query, function (data) {
+        readMsg(data);
+      });
+      
+    }
+
+
+  </script>
+      
+</html>

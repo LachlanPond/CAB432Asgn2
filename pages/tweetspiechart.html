@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="./stylesheet/style.css">
+    <style>
+
+    .arc text {
+      font: 10px sans-serif;
+      text-anchor: middle;
+    }
+
+    .arc path {
+      stroke: #fff;
+    }
+
+    </style>
+    <title>Twitter Analysis</title>
+  </head>
+  <body>
+
+    <header id="pageHeader">
+      <h1 id="mainLogo">Twitter Tracker & Analysis</h1>
+      <a href="/"><h2>Home</h2></a>
+      <a href="/statistics"><h2>Analytics</h2></a>
+    </header>
+    <div id="piechart"><h1>Opinion on Search Queries</h1>
+      <svg class="pie" width="960" height="500"></svg></div>
+  </body>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="http://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+  <script src="jsfiles/d3visuals.js"></script>
+  <script src="jsfiles/textManipulation.js"></script>
+
+  <script>
+
+    // Loop every second to update the pie chart
+    setInterval(function() {
+      $.get('/statisticsData', function (data) {
+        drawPieChart();
+      });
+    }, 1000);
+
+    //Send form
+    function sendFormContent() {
+      var form = $('#message-entry');
+      var query = form.serialize();
+
+      $.post('/messages', query, function (data) {
+        readMsg(data);
+      });
+
+      $.post('/tweets', query, function (data) {
+        readMsg(data);
+      });
+      
+    }
+
+
+  </script>
+      
+</html>

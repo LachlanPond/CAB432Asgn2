@@ -45,7 +45,7 @@ var allTweetsArray = [];
 var countries = [];
 
 // Make sure top 15 file is deleted
-fs.writeFile("top15.txt", '', function(err) { 
+fs.writeFile("data/top15.txt", '', function(err) { 
 	if(err) { 
 		return console.log(err); 
 	}
@@ -75,7 +75,7 @@ var client = new Twitter({
  * Output: Results of the searched stream
  */
 app.get('/', function (appReq, appRes) {
-	appRes.sendFile(path.join(__dirname + '/index.html'));
+	appRes.sendFile(path.join(__dirname + '/pages/index.html'));
 });
 
 /*
@@ -84,7 +84,7 @@ app.get('/', function (appReq, appRes) {
  * Output: Graph showing modal of words
  */
 app.get('/wordMode', function (appReq, appRes) {
-	appRes.sendFile(path.join(__dirname + '/wordMode.html'));
+	appRes.sendFile(path.join(__dirname + '/pages/wordMode.html'));
 });
 
 /*
@@ -94,7 +94,7 @@ app.get('/wordMode', function (appReq, appRes) {
  * tweets
  */
 app.get('/tweetspiechart', function (appReq, appRes) {
-	appRes.sendFile(path.join(__dirname + '/tweetspiechart.html'));
+	appRes.sendFile(path.join(__dirname + '/pages/tweetspiechart.html'));
 });
 
 /*
@@ -112,7 +112,7 @@ app.get('/messages', function(appReq, appRes) {
  * Output: All the user entered searches in the system
  */
 app.get('/viewmessages', function(appReq, appRes) {
-	appRes.sendFile(path.join(__dirname + '/messages.html'));
+	appRes.sendFile(path.join(__dirname + '/pages/messages.html'));
 });
 
 /*
@@ -121,7 +121,7 @@ app.get('/viewmessages', function(appReq, appRes) {
  * Output: Wordcloud of modal of result words
  */
 app.get('/wordcloud', function(appReq, appRes) {
-	appRes.sendFile(path.join(__dirname + '/wordcloud.html'));
+	appRes.sendFile(path.join(__dirname + '/pages/wordcloud.html'));
 });
 
 /*
@@ -258,7 +258,7 @@ app.post('/tweets', function(appReq, appRes) {
 			}
 
 			// Write the top 15 to the results file 
-			fs.writeFile("top15.txt", output, function(err) { 
+			fs.writeFile("data/top15.txt", output, function(err) { 
 				if(err) { 
 					return console.log(err); 
 				}
@@ -371,7 +371,7 @@ app.get('/countries', function(appReq, appRes) {
 	var dataWordJson = convertTwoArraysToJson(wordArray, dataArray);
 	tsvString = tsv.stringify(dataWordJson);
 
-	fs.writeFile("countrydata.tsv", tsvString, function(err) {
+	fs.writeFile("data/countrydata.tsv", tsvString, function(err) {
 		if(err) {
 			return console.log(err);
 		}
@@ -386,7 +386,7 @@ app.get('/countries', function(appReq, appRes) {
  * Output: Options to choose which statistic to view
  */
 app.get('/statistics', function(appReq, appRes) {
-	appRes.sendFile(path.join(__dirname + '/analystics.html'));
+	appRes.sendFile(path.join(__dirname + '/pages/analystics.html'));
 });
 
 /*
@@ -403,7 +403,7 @@ app.get('/statisticsData', function(appReq, appRes) {
 					{"stat": "Neutral " + Math.round(mutualCount*perc) + "%" , "count": mutualCount}];
 
 	tsvString = tsv.stringify(statistic);
-	fs.writeFile("piedata.tsv", tsvString, function(err) {
+	fs.writeFile("data/piedata.tsv", tsvString, function(err) {
 		if(err) {
 			return console.log(err);
 		}
@@ -419,7 +419,7 @@ app.get('/statisticsData', function(appReq, appRes) {
  * Output: error handling page
  */
 app.get('/*', function(appReq, appRes) {
-	appRes.sendFile(path.join(__dirname + '/error.html'));
+	appRes.sendFile(path.join(__dirname + '/pages/error.html'));
 });
 
 
