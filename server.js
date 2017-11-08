@@ -163,7 +163,7 @@ app.post('/tweets', function(appReq, appRes) {
 		language: 'en'
 	});
 
-	var results = [];
+	//var results = [];
 
 	// Start the stream
 	stream.on('data', function(event) {
