@@ -37,9 +37,9 @@ const port = 3000;
  * Set up global variables
  */
 var conversation = [];
-var results = [];
 var searched = '';
 var currentlySearched = '';
+var results = [];
 var allTweets = '';
 var allTweetsArray = [];
 var countries = [];
@@ -163,6 +163,8 @@ app.post('/tweets', function(appReq, appRes) {
 		language: 'en'
 	});
 
+	var results = [];
+
 	// Start the stream
 	stream.on('data', function(event) {
 
@@ -241,6 +243,7 @@ app.post('/tweets', function(appReq, appRes) {
 		
 			var output = "";
 			var count = 0;
+			var start = 0;
 
 			// Find the length of the results,
 			// Make sure we dont take more than the top
@@ -252,12 +255,12 @@ app.post('/tweets', function(appReq, appRes) {
 			}
 
 			// Add the top 15 to the results
-			while(count > -1) { 
-				var msg = results[count];
+			while(start < count) { 
+				var msg = results[start];
 				output += '<h3>'+msg.name+' (@'+msg.username+')</h3>';
 				output += '<p>'+msg.tweet+'</p>'; 
 				output += '<p><i>'+msg.time+'</i></p>';
-				count--;
+				start++;
 			}
 
 			// Write the top 15 to the results file 
